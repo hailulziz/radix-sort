@@ -1,0 +1,72 @@
+function getDigit(num, digit){
+    let newStr = num.toString().split('')
+    newStr = newStr.filter(i => i != '.')
+    return newStr[digit]
+}
+
+function countingSort(array, digit){
+    let sortingArr = [];
+    let finArr = []
+    for(let i = 0; i < array.length; i++){
+        sortingArr.push(getDigit(array[i], digit))
+        finArr.push(0)
+    }
+    
+    let largest = null;
+    for(let i = 0 ; i < sortingArr.length; i++){
+        if(largest == null || largest < sortingArr[i]){
+            largest = sortingArr[i];
+        }
+    }
+
+    let countArr = [];
+    for(let i = 0; i <= largest; i++){
+        countArr.push(0);
+    }
+
+    let holdingArr = []
+    for(let i = 0; i < sortingArr.length; i++){
+        countArr[sortingArr[i]] += 1;
+        if(countArr[sortingArr[i]] > 0){
+            holdingArr.push([sortingArr[i], i])
+        }
+    }
+
+    let sortedArr = []
+    for(let i = 0; i < sortingArr.length; i++){
+        sortedArr.push(0);
+    }
+
+    let index = 0, marker = 0, cindex = 0;
+    while(index <= sortedArr.length){
+        index = index + countArr[cindex];
+        sortedArr.fill(cindex, marker, index + 1);
+        cindex += 1;
+        if(index != marker){
+            marker = index;
+        }
+    }
+
+    
+    for(let i = 0; i < holdingArr.length; i++){
+        let val = holdingArr[i][0]
+        let x = sortedArr.indexOf(Number(val))
+        finArr[x] = array[holdingArr[i][1]]
+        sortedArr[x] = ' '
+    }
+    
+
+    return finArr
+}
+
+function radixSort(arr, digit){
+    let sortedArr = arr
+    for(let i = digit - 1; i >= 0; i--){
+        sortedArr = countingSort(sortedArr, i)
+    }
+    return sortedArr
+}
+
+arr = [381, 429, 176, 761, 290];
+
+console.log(radixSort(arr, 3))
